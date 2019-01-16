@@ -143,6 +143,7 @@ func (z *Reader) readString() (string, error) {
 	needConv := false
 	for i := 0; ; i++ {
 		if i >= len(z.buf) {
+			fmt.Println("readString ", z)
 			return "", ErrHeader
 		}
 		z.buf[i], err = z.r.ReadByte()
@@ -172,6 +173,9 @@ func (z *Reader) readString() (string, error) {
 // readHeader reads the GZIP header according to section 2.3.1.
 // This method does not set z.err.
 func (z *Reader) readHeader() (hdr Header, err error) {
+	fmt.Println(z)
+	fmt.Println(hdr)
+
 	if _, err = io.ReadFull(z.r, z.buf[:10]); err != nil {
 		// RFC 1952, section 2.2, says the following:
 		//	A gzip file consists of a series of "members" (compressed data sets).
@@ -183,6 +187,7 @@ func (z *Reader) readHeader() (hdr Header, err error) {
 		return hdr, err
 	}
 	if z.buf[0] != gzipID1 || z.buf[1] != gzipID2 || z.buf[2] != gzipDeflate {
+		fmt.Println("readHeader ", z, hdr)
 		return hdr, ErrHeader
 	}
 	flg := z.buf[3]
@@ -229,6 +234,7 @@ func (z *Reader) readHeader() (hdr Header, err error) {
 		}
 		digest := le.Uint16(z.buf[:2])
 		if digest != uint16(z.digest) {
+			fmt.Println("readheader2 ", z, hdr)
 			return hdr, ErrHeader
 		}
 	}
