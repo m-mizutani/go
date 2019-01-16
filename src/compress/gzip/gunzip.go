@@ -77,7 +77,7 @@ type Reader struct {
 	decompressor io.ReadCloser
 	digest       uint32 // CRC-32, IEEE polynomial (section 8)
 	size         uint32 // Uncompressed size (section 2.3.1)
-	buf          [512]byte
+	buf          [4098]byte
 	err          error
 	multistream  bool
 }
